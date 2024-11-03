@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Bookmark = ({ bookmarkedPokemon, toggleBookmark }) => {
     return (
@@ -7,7 +8,7 @@ const Bookmark = ({ bookmarkedPokemon, toggleBookmark }) => {
             <ul>
                 {bookmarkedPokemon.map((p, index) => (
                     <li key={index}>
-                        {p.koreanName} ({p.name})
+                        <Link to={`/pokemon/${p.id}`}>#{p.id}. {p.koreanName} ({p.name})</Link>
                         <button onClick={() => toggleBookmark(p)}>북마크 제거</button>
                     </li>
                 ))}

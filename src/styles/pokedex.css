@@ -1,0 +1,36 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    max-width: 100%; 
+    height: 100%; 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+}
+ul, li {
+    margin: 0;
+    padding: 0; 
+}
+.container {
+    display: grid;
+    place-items: center;
+    max-width: 100%;
+    height: 100vh;
+    margin: 0 auto;
+}
+.pokemon-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); 
+    grid-gap: 20px;
+    width: 100%;
+    margin: 0 auto;
+    list-style-type: none;
+}
+.pokemon-item {
+    border: 2px solid #ddd; 
+    border-radius: 8px; 
+    padding: 10px; 
+    margin: 10px; 
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center; 
+}

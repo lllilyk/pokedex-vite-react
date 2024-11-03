@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Bookmark from './Bookmark';
+import '../styles/pokedex.css';
 
 const Pokedex = () => {
     const [pokemon, setPokemon] = useState(null);
@@ -21,7 +22,8 @@ const Pokedex = () => {
                 return {
                     ...pokemonResponse.data,
                     koreanName: koreanName ? koreanName.name : pokemon.name,
-                    sprites: pokemonResponse.data.sprites 
+                    sprites: pokemonResponse.data.sprites,
+                    id: pokemonResponse.data.id
                 };
             })
         );
@@ -79,14 +81,14 @@ const Pokedex = () => {
     };
 
     return (
-        <div>
+        <div className='container'>
             <input type="text" placeholder="포켓몬 이름 또는 id를 입력하세요" value={searchQuery} onChange={handleSearch} />
             {searchQuery ? (
-                <ul>
+                <ul className="pokemon-grid">
                     {filteredPokemon.map((p, index) => (
-                        <li key={index}>
+                        <li key={index} className='pokemon-item'>
                             <h3>
-                                <Link to={`/pokemon/${p.id}`}>{p.koreanName} ({p.name})</Link>
+                                <Link to={`/pokemon/${p.id}`}>#{p.id}.{p.koreanName} ({p.name})</Link>
                             </h3>
                             <Link to={`/pokemon/${p.id}`}>
                                 <img src={p.sprites.front_default} alt={p.name} />
@@ -99,11 +101,11 @@ const Pokedex = () => {
                 </ul>
             ) : (
                 pokemon ? (
-                    <ul>
+                    <ul className="pokemon-grid">
                         {pokemon.map((p, index) => (
-                            <li key={index}>
+                            <li key={index} className='pokemon-item'>
                                 <h3>
-                                    <Link to={`/pokemon/${p.id}`} >{p.koreanName} ({p.name})</Link>
+                                    <Link to={`/pokemon/${p.id}`}>#{p.id}. {p.koreanName} ({p.name})</Link>
                                 </h3>
                                 <Link to={`/pokemon/${p.id}`}>
                                     <img src={p.sprites.front_default} alt={p.name} />

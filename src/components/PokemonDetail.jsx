@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import '../styles/pokedex.css';
 
 const PokemonDetail = () => {
     const { id } = useParams();
@@ -37,7 +38,8 @@ const PokemonDetail = () => {
     ));
 
     return (
-        <div>
+        <div className='container'>
+            <h3>#{id}</h3>
             <h1>{pokemonSpecies.name}</h1>
             <img src={pokemonDetail.sprites.front_default} alt={pokemonSpecies.name} />
             <p>타입: {types}</p>
