@@ -18,7 +18,7 @@ const PokemonDetail = () => {
             const koreanName = speciesResponse.data.names.find(name => name.language.name === 'ko')?.name;
 
             setPokemonSpecies({
-                genus: koreanGenus || 'N/A',
+                genus: koreanGenus || response.data.name,
                 name: koreanName || response.data.name, 
             });
         };

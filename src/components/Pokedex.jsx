@@ -12,6 +12,7 @@ const Pokedex = () => {
     const [bookmarkedPokemon, setBookmarkedPokemon] = useState([]); 
     const limit = 20;
     const maxPokemon = 151;
+    const maxPage = Math.ceil(maxPokemon / limit) - 1;
 
     const fetchPokemonDetails = async (pokemonArray) => {
         return await Promise.all(
@@ -32,17 +33,15 @@ const Pokedex = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // 모든 포켓몬 목록 불러오기
                 const allResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=${maxPokemon}`);
                 const allResults = allResponse.data.results;
                 const allPokemonList = await fetchPokemonDetails(allResults);
                 setAllPokemon(allPokemonList);
 
-                // 페이지별 포켓몬 데이터
+                // 페이지별 포켓몬 데이터 가져오기
                 const offset = page * limit;
-                let adjustedLimit = limit;
-                if(offset + limit > maxPokemon) {
-                    adjustedLimit = maxPokemon - offset;
-                }
+                const adjustedLimit = page === maxPage ? maxPokemon % limit || limit : limit;
 
                 const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=${adjustedLimit}&offset=${offset}`);
                 const results = response.data.results;
@@ -67,7 +66,6 @@ const Pokedex = () => {
     };
 
     const filteredPokemon = allPokemon.filter(p => p.name.includes(searchQuery) || p.koreanName.includes(searchQuery) || p.id.toString() === searchQuery);
-    const maxPage = Math.floor(maxPokemon / limit);
 
     const toggleBookmark = (selectedPokemon) => {
         let updatedBookmarks = [...bookmarkedPokemon];
@@ -85,8 +83,8 @@ const Pokedex = () => {
             <input type="text" placeholder="포켓몬 이름 또는 id를 입력하세요" value={searchQuery} onChange={handleSearch} />
             {searchQuery ? (
                 <ul className="pokemon-grid">
-                    {filteredPokemon.map((p, index) => (
-                        <li key={index} className='pokemon-item'>
+                    {filteredPokemon.map(p => (
+                        <li key={p.id} className='pokemon-item'>
                             <h3>
                                 <Link to={`/pokemon/${p.id}`}>#{p.id}.{p.koreanName} ({p.name})</Link>
                             </h3>
@@ -102,8 +100,8 @@ const Pokedex = () => {
             ) : (
                 pokemon ? (
                     <ul className="pokemon-grid">
-                        {pokemon.map((p, index) => (
-                            <li key={index} className='pokemon-item'>
+                        {pokemon.map(p => (
+                            <li key={p.id} className='pokemon-item'>
                                 <h3>
                                     <Link to={`/pokemon/${p.id}`}>#{p.id}. {p.koreanName} ({p.name})</Link>
                                 </h3>
