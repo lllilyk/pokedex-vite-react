@@ -1,28 +1,46 @@
-import axios from 'axios'
+import axios from 'axios';
+
+// 공통 API 호출 함수
+const fetchFromApi = async (url) => {
+    const response = await axios.get(url);
+    return response.data;
+};
 
 // 포켓몬 목록
 export const fetchPokemonList = async ({ limit, offset }) => {
-    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`);
-    return response.data.results;
+    const url = `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`;
+    return await fetchFromApi(url).then(data => data.results);
 };
 
 // 포켓몬 상세 데이터
 export const fetchPokemonDetails = async (pokemon) => {
-    const pokemonResponse = await axios.get(pokemon.url);
-    const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonResponse.data.id}`);
-    const koreanName = speciesResponse.data.names.find(name => name.language.name === 'ko');
+    const pokemonData = await fetchFromApi(pokemon.url);
+    const speciesData = await fetchPokemonSpecies(pokemonData.id);
+
     return {
-        ...pokemonResponse.data,
-        koreanName: koreanName ? koreanName.name : pokemon.name,
-        sprites: pokemonResponse.data.sprites,
-        id: pokemonResponse.data.id,
+        ...pokemonData,
+        ...speciesData,
+        sprites: pokemonData.sprites,
+        id: pokemonData.id,
+    };
+};
+
+// 포켓몬 종 데이터
+export const fetchPokemonSpecies = async (id) => {
+    const speciesData = await fetchFromApi(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
+    const koreanGenus = speciesData.genera.find(genus => genus.language.name === 'ko')?.genus;
+    const koreanName = speciesData.names.find(name => name.language.name === 'ko')?.name;
+
+    return {
+        genus: koreanGenus || speciesData.name,
+        koreanName: koreanName || speciesData.name,
     };
 };
 
 // 검색어를 기반으로 포켓몬 필터링
 export const filterPokemon = (pokemonList, searchQuery, maxPokemon) => {
-    return pokemonList.filter(p => 
-        (p.id <= maxPokemon) && 
+    return pokemonList.filter(p =>
+        (p.id <= maxPokemon) &&
         (p.name.includes(searchQuery) || p.koreanName.includes(searchQuery) || p.id.toString() === searchQuery)
     );
-}
+};
