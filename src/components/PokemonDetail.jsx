@@ -1,12 +1,15 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { fetchPokemonDetails } from '../api/pokemonApi';
 
 const PokemonDetail = () => {
     const { id } = useParams();
 
-    const { data: pokemon, isLoading, isError } = useQuery(['pokemonDetail', id], () => fetchPokemonDetails({ url: `https://pokeapi.co/api/v2/pokemon/${id}` }));
+    const { data: pokemon, isLoading, isError } = useQuery({
+        queryKey: ['pokemonDetail', id],
+        queryFn: () => fetchPokemonDetails({ url: `https://pokeapi.co/api/v2/pokemon/${id}` }),
+    });    
 
     if (isLoading) return <p>로딩 중...</p>;
     if (isError) return <p>데이터를 가져오는 중 오류가 발생했습니다.</p>;

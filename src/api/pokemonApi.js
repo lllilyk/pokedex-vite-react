@@ -36,11 +36,3 @@ export const fetchPokemonSpecies = async (id) => {
         koreanName: koreanName || speciesData.name,
     };
 };
-
-// 검색어를 기반으로 포켓몬 필터링
-export const filterPokemon = (pokemonList, searchQuery, maxPokemon) => {
-    return pokemonList.filter(p =>
-        (p.id <= maxPokemon) &&
-        (p.name.includes(searchQuery) || p.koreanName.includes(searchQuery) || p.id.toString() === searchQuery)
-    );
-};
